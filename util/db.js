@@ -7,12 +7,4 @@ const db = mysql.createPool({
   database: 'gogit'
 });
 
-db.connect((err) => {
-  if (err) {
-    console.error('MySQL 연결 오류: ' + err.stack);
-    return;
-  }
-  console.log('MySQL 연결 성공');
-});
-
 module.exports = db;
