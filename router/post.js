@@ -20,7 +20,23 @@ router.get('/', (req, res) => {
     });
 });
 
-
+router.post('/', (req, res) => {
+    const param = [req.body.writer, req.body.contents];
+    db.query(
+        'INSERT INTO post (member_id, created_at, contents) VALUE (?, now(), ?)',
+        param,
+        (error, row) => {
+            if (error) {
+                console.error(error);
+            } else {
+                res.json({
+                    "member_id": param[0],
+                    "content": param[1]
+                });
+            }
+        }
+    )   
+});
 
 
 module.exports = router;
