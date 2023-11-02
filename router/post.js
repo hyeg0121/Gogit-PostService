@@ -38,5 +38,23 @@ router.post('/', (req, res) => {
     )   
 });
 
+router.get('/member/:member_no', (req, res) => {
+    const memberNo = req.params.member_no;
+
+    db.query(
+        'SELECT * FROM post WHERE member_id = ?',
+        [memberNo],
+        (error, posts) => {
+            if (error) {    
+                console.log(error);
+                res.json(error);
+            } else {
+                res.json({posts});
+            }
+
+        }
+    );
+});
+
 
 module.exports = router;
