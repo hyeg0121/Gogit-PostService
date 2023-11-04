@@ -7,8 +7,8 @@ const port = 3000;
 const postRouter = require('./router/post');
 
 app.use('/posts', postRouter);
-app.use(express.json()); // JSON 파싱을 위한 미들웨어
-app.use(express.urlencoded({ extended: false })); // URL 인코딩 미들웨어
+app.use(express.json()); 
+app.use(express.urlencoded({ extended: false })); 
 app.use(cors());
 
 app.get('/', (req, res) => {
