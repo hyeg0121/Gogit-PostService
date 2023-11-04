@@ -10,7 +10,7 @@ router.use(cors());
 
 router.get('/', (req, res) => {
     db.query(
-      'SELECT post.*, member.* FROM post INNER JOIN member ON post.member_id = member.id',
+      'SELECT post.*, member.* FROM post INNER JOIN member ON post.member_id = member.id ORDER BY post.created_at DESC',
       (error, posts) => {
         if (error) {
           res.status(500).json({ error: '게시물을 불러오는 중 오류가 발생했습니다.' });
@@ -57,7 +57,7 @@ router.get('/member/:member_no', (req, res) => {
     const memberNo = req.params.member_no;
 
     db.query(
-        'SELECT post.*, member.* FROM post INNER JOIN member ON post.member_id = member.id WHERE member.id = ?',
+        'SELECT post.*, member.* FROM post INNER JOIN member ON post.member_id = member.id WHERE member.id = ? ORDER BY post.created_at DESC',
         [memberNo],
         (error, posts) => {
             if (error) {
@@ -78,7 +78,7 @@ router.get('/member/:member_no', (req, res) => {
                   };
                 });
                 res.status(200).json(modifiedPosts);
-            }
+              }
         }
     );
 });
