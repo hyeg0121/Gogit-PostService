@@ -10,15 +10,30 @@ router.use(cors());
 
 router.get('/', (req, res) => {
     db.query(
-        'SELECT * FROM post', 
-        (selectPostError, posts) => {
-        if (selectPostError) {
-            res.json(selectPostError);
+      'SELECT post.*, member.* FROM post INNER JOIN member ON post.member_id = member.id',
+      (error, posts) => {
+        if (error) {
+          res.status(500).json({ error: '게시물을 불러오는 중 오류가 발생했습니다.' });
         } else {
-            res.json(posts);
+          const modifiedPosts = posts.map(post => {
+            return {
+              id: post.id,
+              contents: post.contents,
+              createdAt: post.created_at,
+              writer: {
+                id: post.id, 
+                githubId: post.github_id,
+                avatarUrl: post.avatar_url, 
+                githubToken: post.github_token,
+                htmlUrl: post.html_url
+              }
+            };
+          });
+          res.status(200).json(modifiedPosts);
         }
-    });
-});
+      }
+    );
+  });  
 
 router.post('/', (req, res) => {
     const param = [req.body.writer, req.body.contents];
@@ -42,16 +57,28 @@ router.get('/member/:member_no', (req, res) => {
     const memberNo = req.params.member_no;
 
     db.query(
-        'SELECT * FROM post WHERE member_id = ?',
+        'SELECT post.*, member.* FROM post INNER JOIN member ON post.member_id = member.id WHERE member.id = ?',
         [memberNo],
         (error, posts) => {
-            if (error) {    
-                console.log(error);
-                res.json(error);
+            if (error) {
+                res.status(500).json({ error: '게시물을 불러오는 중 오류가 발생했습니다.' });
             } else {
-                res.json({posts});
+                const modifiedPosts = posts.map(post => {
+                  return {
+                    id: post.id,
+                    contents: post.contents,
+                    createdAt: post.created_at,
+                    writer: {
+                      id: post.id, 
+                      githubId: post.github_id,
+                      avatarUrl: post.avatar_url, 
+                      githubToken: post.github_token,
+                      htmlUrl: post.html_url
+                    }
+                  };
+                });
+                res.status(200).json(modifiedPosts);
             }
-
         }
     );
 });
