@@ -5,8 +5,10 @@ const db = require('./util/db');
 const app = express();
 const port = 3000;
 const postRouter = require('./router/post');
+const commentRouter = require('./router/comment');
 
 app.use('/posts', postRouter);
+app.use('', commentRouter);
 app.use(express.json()); 
 app.use(express.urlencoded({ extended: false })); 
 app.use(cors());
