@@ -2,7 +2,6 @@ const express = require('express');
 const router = express.Router();
 const cors = require('cors');
 const db = require('../util/db'); 
-const { default: axios } = require('axios');
 
 router.use(express.json()); 
 router.use(express.urlencoded({ extended: false })); // URL 인코딩 미들웨어
@@ -18,7 +17,7 @@ router.get('/', (req, res) => {
           const modifiedPosts = posts.map(post => {
             return {
               id: post.id,
-              contents: post.contents,
+              content: post.content,
               createdAt: post.created_at,
               writer: {
                 id: post.id, 
@@ -36,9 +35,9 @@ router.get('/', (req, res) => {
   });  
 
 router.post('/', (req, res) => {
-    const param = [req.body.writer, req.body.contents];
+    const param = [req.body.writer, req.body.content];
     db.query(
-        'INSERT INTO post (member_id, created_at, contents) VALUE (?, now(), ?)',
+        'INSERT INTO post (member_id, created_at, content) VALUE (?, now(), ?)',
         param,
         (error, row) => {
             if (error) {
@@ -53,7 +52,7 @@ router.post('/', (req, res) => {
     )   
 });
 
-router.get('/member/:member_no', (req, res) => {
+router.get('/members/:member_no', (req, res) => {
     const memberNo = req.params.member_no;
 
     db.query(
@@ -66,7 +65,7 @@ router.get('/member/:member_no', (req, res) => {
                 const modifiedPosts = posts.map(post => {
                   return {
                     id: post.id,
-                    contents: post.contents,
+                    content: post.content,
                     createdAt: post.created_at,
                     writer: {
                       id: post.id, 
