@@ -7,7 +7,7 @@ const port = 3000;
 const postRouter = require('./router/post');
 const commentRouter = require('./router/comment');
 
-app.use('/posts', postRouter);
+app.use('', postRouter);
 app.use('', commentRouter);
 app.use(express.json()); 
 app.use(express.urlencoded({ extended: false })); 
