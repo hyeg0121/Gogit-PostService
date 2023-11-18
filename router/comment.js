@@ -33,7 +33,10 @@ router.get('/posts/:post_id/comments', (req, res) => {
                 res.status(404).json({ message: '게시글이 존재하지 않습니다.' });
             } else {
                 db.query(
-                    'SELECT * FROM comment WHERE post_id = ?',
+                    `SELECT comment.*, member.github_id, member.avatar_url, member.github_token, member.html_url 
+                    FROM comment 
+                    INNER JOIN member ON comment.member_id = member.id
+                    WHERE post_id = ?`,
                     [req.params.post_id],
                     (err, results) => {
                         if (err) {
@@ -41,7 +44,19 @@ router.get('/posts/:post_id/comments', (req, res) => {
                         } else if (results.length === 0) {
                             res.status(404).json({ message: '댓글이 존재하지 않습니다.' });
                         } else {
-                            res.status(200).json(results);
+                            comments = results.map(result => {
+                                return {
+                                    id: result.id,
+                                    content: result.content,
+                                    author: {
+                                        githubId: result.github_id,
+                                        avatarUrl: result.avatar_url,
+                                        githubToken: result.github_token,
+                                        htmlUrl: result.html_url
+                                    }
+                                }
+                            })
+                            res.status(200).json(comments);
                         }
                     }
                 )
